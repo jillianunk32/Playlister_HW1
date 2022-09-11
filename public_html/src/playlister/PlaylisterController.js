@@ -66,7 +66,7 @@ export default class PlaylisterController {
         }
         document.getElementById("add-song-button").onmousedown = (event) => {
             let newSong = {"title" : "Untitled", "artist" : "Unknown", "youTubeId" :"dQw4w9WgXcQ"};
-            this.model.addSong(newSong);
+            this.model.addAddSongTransaction(newSong);
             this.model.loadList(this.model.currentList);
             this.model.saveLists();
         }
@@ -119,9 +119,8 @@ export default class PlaylisterController {
                 let newSong = {"title": editTitleText , "artist": editArtistText, "youTubeId": editYoutubeText};
                 let index = document.getElementsByClassName("list-card selected-list-card")[0].id;
                 let indexNum = index.split('-')[2]-1;
-                this.model.currentList.editSong(indexNum, newSong);
+                this.model.addEditSongTransaction(indexNum, newSong);
                 this.model.view.refreshPlaylist(this.model.currentList);
-
             // CLOSE THE MODAL
             let song = document.getElementById("playlist-card-"+(indexNum+1));
             song.setAttribute("class", "list-card unselected-list-card");
@@ -150,9 +149,8 @@ export default class PlaylisterController {
                 console.log(indexNum);
                 let song = document.getElementById("playlist-card-"+(indexNum+1));
                 song.setAttribute("class", "list-card unselected-list-card");
-                this.model.currentList.removeSong(indexNum);
+                this.model.addRemoveSongTransaction(indexNum);
                 this.model.view.refreshPlaylist(this.model.currentList);
-
             // CLOSE THE MODAL
             let removeSongModal = document.getElementById("delete-song-modal");
             removeSongModal.classList.remove("is-visible");

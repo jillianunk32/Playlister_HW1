@@ -1,6 +1,9 @@
 import jsTPS from "../common/jsTPS.js";
 import Playlist from "./Playlist.js";
 import MoveSong_Transaction from "./transactions/MoveSong_Transaction.js";
+import AddSong_Transaction from "./transactions/AddSong_Transaction.js";
+import RemoveSong_Transaction from "./transactions/RemoveSong_Transaction.js";
+import EditSong_Transaction from "./transactions/EditSong_Transaction.js";
 
 /**
  * PlaylisterModel.js
@@ -233,7 +236,6 @@ export default class PlaylisterModel {
     }
 
     // NEXT WE HAVE THE FUNCTIONS THAT ACTUALLY UPDATE THE LOADED LIST
-
     moveSong(fromIndex, toIndex) {
         if (this.hasCurrentList()) {
             let tempArray = this.currentList.songs.filter((song, index) => index !== fromIndex);
@@ -290,6 +292,24 @@ export default class PlaylisterModel {
 
     addMoveSongTransaction(fromIndex, onIndex) {
         let transaction = new MoveSong_Transaction(this, fromIndex, onIndex);
+        this.tps.addTransaction(transaction);
+        this.view.updateToolbarButtons(this);
+    }
+
+    addAddSongTransaction(onIndex) {
+        let transaction = new AddSong_Transaction(this, onIndex);
+        this.tps.addTransaction(transaction);
+        this.view.updateToolbarButtons(this);
+    }
+
+    addRemoveSongTransaction(onIndex) {
+        let transaction = new RemoveSong_Transaction(this, onIndex);
+        this.tps.addTransaction(transaction);
+        this.view.updateToolbarButtons(this);
+    }
+
+    addEditSongTransaction(onIndex, newSong) {
+        let transaction = new EditSong_Transaction(this, onIndex, newSong);
         this.tps.addTransaction(transaction);
         this.view.updateToolbarButtons(this);
     }
