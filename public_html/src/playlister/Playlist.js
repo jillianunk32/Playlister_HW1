@@ -42,4 +42,8 @@ export default class Playlist {
     editSong(index, song){
         this.songs[index]=song;
     }
+
+    removeSong(index){
+        this.songs.splice(index, 1);
+    }
 }

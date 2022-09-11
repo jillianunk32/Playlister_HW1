@@ -261,6 +261,14 @@ export default class PlaylisterModel {
         this.saveLists();
     }
 
+    removeSong(index){
+        if(this.hasCurrentList()){
+            this.currentList.songs.splice(index, 1);
+            this.view.refreshPlaylist(this.currentList);
+        }
+        this.saveLists();
+    }
+
     // SIMPLE UNDO/REDO FUNCTIONS, NOTE THESE USE TRANSACTIONS
 
     undo() {
