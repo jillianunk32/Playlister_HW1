@@ -15,7 +15,7 @@ import MoveSong_Transaction from "./transactions/MoveSong_Transaction.js";
  * inside the view of the page.
  * 
  * @author McKilla Gorilla
- * @author ?
+ * @author Jillian Unkenholz
  */
 export default class PlaylisterModel {
     /*
@@ -239,6 +239,23 @@ export default class PlaylisterModel {
             let tempArray = this.currentList.songs.filter((song, index) => index !== fromIndex);
             tempArray.splice(toIndex, 0, this.currentList.getSongAt(fromIndex))
             this.currentList.songs = tempArray;
+            this.view.refreshPlaylist(this.currentList);
+        }
+        this.saveLists();
+    }
+
+    // This function adds a new song
+    addSong(newSong) {
+        if (this.hasCurrentList()) {
+            this.currentList.songs.push(newSong);
+            this.view.refreshPlaylist(this.currentList);
+        }
+        this.saveLists();
+    }
+
+    editSong(index, song){
+        if(this.hasCurrentList()){
+            this.currentList.songs[index]= song ;
             this.view.refreshPlaylist(this.currentList);
         }
         this.saveLists();

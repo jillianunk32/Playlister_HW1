@@ -4,7 +4,7 @@
  * This class provides responses for all user interface interactions.
  * 
  * @author McKilla Gorilla
- * @author ?
+ * @author Jillian Unkenholz
  */
 export default class PlaylisterController {
     constructor() { }
@@ -64,6 +64,12 @@ export default class PlaylisterController {
             this.model.unselectAll();
             this.model.unselectCurrentList();
         }
+        document.getElementById("add-song-button").onmousedown = (event) => {
+            let newSong = {"title" : "Untitled", "artist" : "Unknown", "youTubeId" :"dQw4w9WgXcQ"};
+            this.model.addSong(newSong);
+            this.model.loadList(this.model.currentList);
+            this.model.saveLists();
+        }
     }
 
     /*
@@ -101,8 +107,36 @@ export default class PlaylisterController {
             // CLOSE THE MODAL
             let deleteListModal = document.getElementById("delete-list-modal");
             deleteListModal.classList.remove("is-visible");
-        }        
-    }
+        }
+
+
+        let editSongConfirmButton = document.getElementById("edit-song-confirm-button");
+        editSongConfirmButton.onclick = (event) => {
+                this.model.toggleConfirmDialogOpen();
+                let editTitleText = document.getElementById("edit-song-title-text").value;
+                let editArtistText = document.getElementById("edit-song-artist-text").value;
+                let editYoutubeText = document.getElementById("edit-song-youtubeId-text").value;
+                let newSong = {"title": editTitleText , "artist": editArtistText, "youTubeId": editYoutubeText};
+                let index = document.getElementsByClassName("list-card", "selected-list-card")[0].id;
+                let indexNum = index.split('-')[2]-1;
+                this.model.currentList.editSong(indexNum, newSong);
+                this.model.view.refreshPlaylist(this.model.currentList);
+
+            // CLOSE THE MODAL
+            let editSongModal = document.getElementById("edit-playlist-card-modal");
+            editSongModal.classList.remove("is-visible");
+        }
+
+        let editSongCancelButton = document.getElementById("edit-song-cancel-button");
+        editSongCancelButton.onclick = (event) => {
+                this.model.toggleConfirmDialogOpen();
+
+            // CLOSE THE MODAL
+            let editSongModal = document.getElementById("edit-playlist-card-modal");
+            editSongModal.classList.remove("is-visible");
+        }
+
+        }
 
     /*
         registerListSelectHandlers
@@ -236,6 +270,17 @@ export default class PlaylisterController {
                     && !isNaN(toIndex)) {
                     this.model.addMoveSongTransaction(fromIndex, toIndex);
                 }
+            }
+
+            card.ondblclick = (event) => {
+                this.ignoreParentClick(event);
+                //let text = document.getElementById("playlist-card-" + (i+1));
+
+                let editCardModal = document.getElementById("edit-playlist-card-modal");
+
+                // OPEN UP THE DIALOG
+                editCardModal.classList.add("is-visible");
+                this.model.toggleConfirmDialogOpen();
             }
         }
     }

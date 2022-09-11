@@ -5,7 +5,7 @@
  * for loading data into our controls and building other UI controls.
  * 
  * @author McKilla Gorilla
- * @author ?
+ * @author Jillian Unkenholz
  */
 export default class PlaylisterView {
     constructor() {}
@@ -18,6 +18,7 @@ export default class PlaylisterView {
     init() {
         // @todo - ONCE YOU IMPLEMENT THE FOOLPROOF DESIGN STUFF YOU SHOULD PROBABLY
         // START THESE BUTTONS OFF AS DISABLED
+        this.enableButton('add-song-button');
         this.enableButton('undo-button');
         this.enableButton('redo-button');
         this.enableButton('close-button');
@@ -114,8 +115,18 @@ export default class PlaylisterView {
             itemDiv.id = "playlist-card-" + (i + 1);
 
             // PUT THE CONTENT INTO THE CARD
+            // Make the playlist song numbers
+            itemDiv.appendChild(document.createTextNode((i+1) + ". "));
+            //now start adding the songs with links
             let itemText = document.createTextNode(song.title + " by " + song.artist);
-            itemDiv.appendChild(itemText);
+            // Make the hyperlink element
+            let itemA = document.createElement("a");
+            // Make the actual hyperlink
+            let videoId = "https://www.youtube.com/watch?v=" + song.youTubeId;
+            itemA.setAttribute('href', videoId);
+            //append the hyperlinked song
+            itemA.appendChild(itemText);
+            itemDiv.appendChild(itemA);
 
             // AND PUT THE CARD INTO THE UI
             itemsDiv.appendChild(itemDiv);

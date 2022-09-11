@@ -4,7 +4,7 @@
  * This class represents our playlist.
  * 
  * @author McKilla Gorilla
- * @author ?
+ * @author Jillian Unkenholz
  */
 export default class Playlist {
     constructor(initId) {
@@ -33,5 +33,13 @@ export default class Playlist {
 
     moveSong(oldIndex, newIndex) {
         this.songs.splice(newIndex, 0, this.songs.splice(oldIndex, 1)[0]);
+    }
+
+    addSong(song){
+        this.songs.push(song);
+    }
+
+    editSong(index, song){
+        this.songs[index]=song;
     }
 }
