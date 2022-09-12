@@ -192,8 +192,6 @@ export default class PlaylisterView {
         listCard.classList.remove("unselected-list-card");
         listCard.classList.add("selected-list-card");
         this.enableButton("add-song-button");
-        this.enableButton("undo-button");
-        this.enableButton("redo-button");
         this.enableButton("close-button");
     }
 
@@ -221,26 +219,39 @@ export default class PlaylisterView {
     */
     updateToolbarButtons(model) {
         let tps = model.tps;
-        console.log(model.confirmDialogOpen);
+        console.log("buttons" + model.confirmDialogOpen);
         if (model.confirmDialogOpen) {
-            if((tps.hasTransactionToUndo()) && (tps.hasTransactionToRedo()) ){
+            this.disableButton("add-song-button");
+            this.disableButton("undo-button");
+            this.disableButton("redo-button");
+            this.disableButton("close-button");
+        }
+        else{
+            if(tps.hasTransactionToUndo()){
                 this.enableButton("undo-button");
-                this.enableButton("redo-button");
-            }
-            else if((tps.hasTransactionToUndo()) &&  !(tps.hasTransactionToRedo())){
-                this.enableButton("undo-button");
-                this.disableButton("redo-button");
-            }
-            else if((tps.hasTransactionToRedo()&&  !(tps.hasTransactionToUndo()))){
-                this.disableButton("undo-button");
-                this.enableButton("redo-button");
+                this.enableButton("add-song-button");
             }
             else{
                 this.disableButton("undo-button");
+                this.enableButton("add-song-button");
+            }
+            if(tps.hasTransactionToRedo()){
+                this.enableButton("redo-button");
+                this.enableButton("add-song-button");
+            }
+            else{
                 this.disableButton("redo-button");
+                this.enableButton("add-song-button");
             }
         }
-        console.log(tps.toString());
+        if(model.hasCurrentList() && !(model.confirmDialogOpen)){
+            this.enableButton("close-button");
+            this.enableButton("add-song-button");
+        }
+        else{
+            this.disableButton("close-button");
+            this.disableButton("add-song-button");
+        }
     }
 
     /*

@@ -50,17 +50,16 @@ export default class PlaylisterController {
             let newList = this.model.addNewList("Untitled", []);
             this.model.loadList(newList.id);
             this.model.saveLists();
-            console.log(this.model.tps.toString());
-            this.model.view.disableButton("undo-button");
-            this.model.view.disableButton("redo-button");
         }
         // HANDLER FOR UNDO BUTTON
         document.getElementById("undo-button").onmousedown = (event) => {
             this.model.undo();
+            this.model.view.updateToolbarButtons(this.model);
         }
         // HANDLER FOR REDO BUTTON
         document.getElementById("redo-button").onmousedown = (event) => {
             this.model.redo();
+            this.model.view.updateToolbarButtons(this.model);
         }
         // HANDLER FOR CLOSE LIST BUTTON
         document.getElementById("close-button").onmousedown = (event) => {
@@ -71,6 +70,7 @@ export default class PlaylisterController {
             let newSong = {"title" : "Untitled", "artist" : "Unknown", "youTubeId" :"dQw4w9WgXcQ"};
             this.model.addAddSongTransaction(newSong);
             this.model.view.refreshPlaylist(this.model.currentList);
+            this.model.view.updateToolbarButtons(this.model);
             this.model.saveLists();
         }
     }
@@ -129,10 +129,10 @@ export default class PlaylisterController {
             // CLOSE THE MODAL
             let song = document.getElementById("playlist-card-"+(indexNum+1));
             song.setAttribute("class", "list-card unselected-list-card");
+            this.model.view.updateToolbarButtons(this.model);
             this.model.toggleConfirmDialogOpen();
             let editSongModal = document.getElementById("edit-playlist-card-modal");
             editSongModal.classList.remove("is-visible");
-            this.model.view.updateToolbarButtons(this.model);
             
         }
 
@@ -162,7 +162,6 @@ export default class PlaylisterController {
             this.model.toggleConfirmDialogOpen();
             let removeSongModal = document.getElementById("delete-song-modal");
             removeSongModal.classList.remove("is-visible");
-            this.model.view.updateToolbarButtons(this.model);
         }
 
         let removeSongCancelButton = document.getElementById("delete-song-cancel-button");
@@ -323,14 +322,19 @@ export default class PlaylisterController {
                 document.getElementById("edit-song-artist-text").value=  (this.model.currentList.songs[i].artist);
                 document.getElementById("edit-song-youtubeId-text").value= (this.model.currentList.songs[i].youTubeId);
                 // OPEN UP THE DIALOG
+                this.model.toggleConfirmDialogOpen();
+                this.model.view.updateToolbarButtons(this.model);
                 editCardModal.classList.add("is-visible");
-                //this.model.toggleConfirmDialogOpen();
             }
 
             let cardDeleteButton = document.getElementById("delete-card-" + (i+1));
             cardDeleteButton.onclick = (event) => {
                 this.ignoreParentClick(event);
                 card.setAttribute("class", "list-card selected-list-card");
+                console.log(this.model.confirmDialogOpen);
+                this.model.toggleConfirmDialogOpen();
+                console.log(this.model.confirmDialogOpen);
+                this.model.view.updateToolbarButtons(this.model);
                 // VERIFY THAT THE USER REALLY WANTS TO DELETE THE PLAYLIST
                 // THE CODE BELOW OPENS UP THE LIST DELETE VERIFICATION DIALOG
                 let deleteSpan = document.getElementById("delete-song-span");
@@ -341,7 +345,6 @@ export default class PlaylisterController {
 
                 // OPEN UP THE DIALOG
                 removeCardModal.classList.add("is-visible");
-                //this.model.toggleConfirmDialogOpen();
             }
         }
     }
