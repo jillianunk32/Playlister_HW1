@@ -274,6 +274,7 @@ export default class PlaylisterModel {
     // SIMPLE UNDO/REDO FUNCTIONS, NOTE THESE USE TRANSACTIONS
 
     undo() {
+        console.log(this.tps.hasTransactionToUndo());
         if (this.tps.hasTransactionToUndo()) {
             this.tps.undoTransaction();
             this.view.updateToolbarButtons(this);
@@ -308,8 +309,8 @@ export default class PlaylisterModel {
         this.view.updateToolbarButtons(this);
     }
 
-    addEditSongTransaction(onIndex, newSong) {
-        let transaction = new EditSong_Transaction(this, onIndex, newSong);
+    addEditSongTransaction(onIndex, newSong, mySong) {
+        let transaction = new EditSong_Transaction(this, onIndex, newSong, mySong);
         this.tps.addTransaction(transaction);
         this.view.updateToolbarButtons(this);
     }

@@ -8,11 +8,12 @@ import jsTPS_Transaction from "../../common/jsTPS.js"
  * @author Jillian Unkenholz
  */
 export default class EditSong_Transaction extends jsTPS_Transaction {
-    constructor(initModel, initIndex, initSong) {
+    constructor(initModel, initIndex, initSong, initOrg) {
         super();
         this.model = initModel;
         this.index = initIndex;
         this.song = initSong;
+        this.orgSong = initOrg;
     }
 
     doTransaction() {
@@ -20,6 +21,8 @@ export default class EditSong_Transaction extends jsTPS_Transaction {
     }
     
     undoTransaction() {
-        this.model.editSong(this.index, this.song);
+        this.model.currentList.songs[this.index]=this.orgSong;
+        this.model.view.refreshPlaylist(this.model.currentList);
+        this.model.view.controller.registerItemHandlers();
     }
 }

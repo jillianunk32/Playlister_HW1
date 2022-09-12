@@ -7,18 +7,19 @@ import jsTPS_Transaction from "../../common/jsTPS.js"
  * 
  * @author Jillian Unkenholz
  */
-export default class MoveSong_Transaction extends jsTPS_Transaction {
-    constructor(initModel, initNewIndex) {
+export default class AddSong_Transaction extends jsTPS_Transaction {
+    constructor(initModel, initNewSong) {
         super();
         this.model = initModel;
-        this.newIndex = initNewIndex;
+        this.newSong = initNewSong;
     }
 
     doTransaction() {
-        this.model.addSong(this.newIndex);
+        this.model.addSong(this.newSong);
     }
     
     undoTransaction() {
-        this.model.addSong(this.newIndex);
+        let song = document.getElementById("playlist-card-"+ (this.model.currentList.songs.length));
+        song.remove();
     }
 }

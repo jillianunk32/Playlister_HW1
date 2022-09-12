@@ -67,7 +67,7 @@ export default class PlaylisterController {
         document.getElementById("add-song-button").onmousedown = (event) => {
             let newSong = {"title" : "Untitled", "artist" : "Unknown", "youTubeId" :"dQw4w9WgXcQ"};
             this.model.addAddSongTransaction(newSong);
-            this.model.loadList(this.model.currentList);
+            this.model.view.refreshPlaylist(this.model.currentList);
             this.model.saveLists();
         }
     }
@@ -112,59 +112,65 @@ export default class PlaylisterController {
 
         let editSongConfirmButton = document.getElementById("edit-song-confirm-button");
         editSongConfirmButton.onclick = (event) => {
-                this.model.toggleConfirmDialogOpen();
+                let index1 = document.getElementsByClassName("list-card selected-list-card")[0].id;
+                let indexNum1 = index1.split('-')[2]-1;
+                let mySong = this.model.currentList.songs[indexNum1];
                 let editTitleText = document.getElementById("edit-song-title-text").value;
                 let editArtistText = document.getElementById("edit-song-artist-text").value;
                 let editYoutubeText = document.getElementById("edit-song-youtubeId-text").value;
                 let newSong = {"title": editTitleText , "artist": editArtistText, "youTubeId": editYoutubeText};
                 let index = document.getElementsByClassName("list-card selected-list-card")[0].id;
                 let indexNum = index.split('-')[2]-1;
-                this.model.addEditSongTransaction(indexNum, newSong);
+                this.model.addEditSongTransaction(indexNum, newSong, mySong);
                 this.model.view.refreshPlaylist(this.model.currentList);
             // CLOSE THE MODAL
             let song = document.getElementById("playlist-card-"+(indexNum+1));
             song.setAttribute("class", "list-card unselected-list-card");
+            this.model.toggleConfirmDialogOpen();
             let editSongModal = document.getElementById("edit-playlist-card-modal");
             editSongModal.classList.remove("is-visible");
+            
         }
 
         let editSongCancelButton = document.getElementById("edit-song-cancel-button");
         editSongCancelButton.onclick = (event) => {
-                this.model.toggleConfirmDialogOpen();
+                
                 let index = document.getElementsByClassName("list-card selected-list-card")[0].id;
                 let indexNum = index.split('-')[2]-1;
                 let song = document.getElementById("playlist-card-"+(indexNum+1));
                 song.setAttribute("class", "list-card unselected-list-card");
             // CLOSE THE MODAL
-
+            this.model.toggleConfirmDialogOpen();
             let editSongModal = document.getElementById("edit-playlist-card-modal");
             editSongModal.classList.remove("is-visible");
         }
 
         let removeSongConfirmButton = document.getElementById("delete-song-confirm-button");
         removeSongConfirmButton.onclick = (event) => {
-                this.model.toggleConfirmDialogOpen();
+                
                 let index = document.getElementsByClassName("list-card selected-list-card")[0].id;
                 let indexNum = index.split('-')[2]-1;
-                console.log(indexNum);
                 let song = document.getElementById("playlist-card-"+(indexNum+1));
                 song.setAttribute("class", "list-card unselected-list-card");
                 this.model.addRemoveSongTransaction(indexNum);
                 this.model.view.refreshPlaylist(this.model.currentList);
             // CLOSE THE MODAL
+            this.model.toggleConfirmDialogOpen();
             let removeSongModal = document.getElementById("delete-song-modal");
             removeSongModal.classList.remove("is-visible");
+            this.model.view.updateToolbarButtons(this.model);
         }
 
         let removeSongCancelButton = document.getElementById("delete-song-cancel-button");
         removeSongCancelButton.onclick = (event) => {
-                this.model.toggleConfirmDialogOpen();
+                //this.model.toggleConfirmDialogOpen();
 
             // CLOSE THE MODAL
             let index = document.getElementsByClassName("list-card selected-list-card")[0].id;
             let indexNum = index.split('-')[2]-1;
             let song = document.getElementById("playlist-card-"+(indexNum+1));
             song.setAttribute("class", "list-card unselected-list-card");
+            this.model.toggleConfirmDialogOpen();
             let removeSongModal = document.getElementById("delete-song-modal");
             removeSongModal.classList.remove("is-visible");
         }
@@ -308,10 +314,13 @@ export default class PlaylisterController {
             card.ondblclick = (event) => {
                 this.ignoreParentClick(event);
                 card.setAttribute("class", "list-card selected-list-card");
+                document.getElementById("edit-song-title-text").value = (this.model.currentList.songs[i].title);
                 let editCardModal = document.getElementById("edit-playlist-card-modal");
+                document.getElementById("edit-song-artist-text").value=  (this.model.currentList.songs[i].artist);
+                document.getElementById("edit-song-youtubeId-text").value= (this.model.currentList.songs[i].youTubeId);
                 // OPEN UP THE DIALOG
                 editCardModal.classList.add("is-visible");
-                this.model.toggleConfirmDialogOpen();
+                //this.model.toggleConfirmDialogOpen();
             }
 
             let cardDeleteButton = document.getElementById("delete-card-" + (i+1));
@@ -323,13 +332,12 @@ export default class PlaylisterController {
                 let deleteSpan = document.getElementById("delete-song-span");
                 deleteSpan.innerHTML = "";
                 let cardName = card.getElementsByTagName('a')[0].innerHTML;
-                console.log(cardName);
                 deleteSpan.appendChild(document.createTextNode(cardName));
                 let removeCardModal = document.getElementById("delete-song-modal");
 
                 // OPEN UP THE DIALOG
                 removeCardModal.classList.add("is-visible");
-                this.model.toggleConfirmDialogOpen();
+                //this.model.toggleConfirmDialogOpen();
             }
         }
     }

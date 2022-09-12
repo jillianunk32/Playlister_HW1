@@ -39,8 +39,9 @@ export default class Playlist {
         this.songs.push(song);
     }
 
-    editSong(index, song){
+    editSong(index, song, song2){
         this.songs[index]=song;
+        this.song2=song2;
     }
 
     removeSong(index){

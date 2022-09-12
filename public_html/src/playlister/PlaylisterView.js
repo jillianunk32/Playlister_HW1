@@ -18,10 +18,10 @@ export default class PlaylisterView {
     init() {
         // @todo - ONCE YOU IMPLEMENT THE FOOLPROOF DESIGN STUFF YOU SHOULD PROBABLY
         // START THESE BUTTONS OFF AS DISABLED
-        this.enableButton('add-song-button');
-        this.enableButton('undo-button');
-        this.enableButton('redo-button');
-        this.enableButton('close-button');
+        this.disableButton('add-song-button');
+        this.disableButton('undo-button');
+        this.disableButton('redo-button');
+        this.disableButton('close-button');
     }
 
     /*
@@ -130,7 +130,6 @@ export default class PlaylisterView {
             deleteButton.setAttribute("id", "delete-card-" + (i+1));
             deleteButton.setAttribute("class", "playlist-card-button");
             deleteButton.setAttribute("value", "x");
-            deleteButton.setAttribute("align", "right");
             //append the hyperlinked song
             itemA.appendChild(itemText);
             itemDiv.appendChild(itemA);
@@ -192,6 +191,11 @@ export default class PlaylisterView {
         let listCard = document.getElementById("playlist-" + listId);
         listCard.classList.remove("unselected-list-card");
         listCard.classList.add("selected-list-card");
+        this.enableButton("add-song-button");
+        this.enableButton("undo-button");
+        this.enableButton("redo-button");
+        this.enableButton("close-button");
+
     }
 
     /*
@@ -204,6 +208,10 @@ export default class PlaylisterView {
         let listCard = document.getElementById("playlist-" + listId);
         listCard.classList.add("unselected-list-card");
         listCard.classList.remove("selected-list-card");
+        this.disableButton("add-song-button");
+        this.disableButton("undo-button");
+        this.disableButton("redo-button");
+        this.disableButton("close-button");
     }
 
     /*
@@ -214,12 +222,22 @@ export default class PlaylisterView {
     */
     updateToolbarButtons(model) {
         let tps = model.tps;
+        console.log(model.confirmDialogOpen);
         if (model.confirmDialogOpen) {
-            this.disableButton("add-list-button");
-            this.disableButton("undo-button");
-            this.disableButton("redo-button");
-            this.disableButton("close-button");
+            if((tps.hasTransactionToUndo()) && tps.hasTransactionToRedo()){
+                this.enableButton("undo-button");
+                this.enableButton("redo-button");
+            }
+            else if(tps.hasTransactionToUndo()){
+                this.enableButton("undo-button");
+            }
+            else{
+                this.disableButton("add-song-button");
+                this.disableButton("undo-button");
+                this.disableButton("redo-button");
+            }
         }
+        console.log(tps.toString());
     }
 
     /*
@@ -231,8 +249,11 @@ export default class PlaylisterView {
         let statusBar = document.getElementById("statusbar");
         if (model.hasCurrentList()) {
             statusBar.innerHTML = model.currentList.getName();
+            this.enableButton("add-list-button");
+            this.enableButton("close-button");
         } else {
             statusBar.innerHTML = '';
+            this.updateToolbarButtons(model);
         }
     }
 }

@@ -12,6 +12,7 @@ export default class RemoveSong_Transaction extends jsTPS_Transaction {
         super();
         this.model = initModel;
         this.index = initIndex;
+        this.song = this.model.currentList.songs[this.index];
     }
 
     doTransaction() {
@@ -19,6 +20,13 @@ export default class RemoveSong_Transaction extends jsTPS_Transaction {
     }
     
     undoTransaction() {
-        this.model.removeSong(this.index);
+        this.model.currentList.songs.push(this.model.currentList.songs[this.model.currentList.songs.length-1]);
+        for (let i = this.model.currentList.songs.length-2; i>this.index; i--){
+            let temp = this.model.currentList.songs[i];
+            this.model.currentList.songs[i+1]=temp;
+        }
+        this.model.currentList.songs[this.index]=this.song;
+        this.model.view.refreshPlaylist(this.model.currentList);
+        this.model.view.controller.registerItemHandlers();
     }
 }
