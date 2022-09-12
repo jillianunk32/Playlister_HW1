@@ -50,6 +50,9 @@ export default class PlaylisterController {
             let newList = this.model.addNewList("Untitled", []);
             this.model.loadList(newList.id);
             this.model.saveLists();
+            console.log(this.model.tps.toString());
+            this.model.view.disableButton("undo-button");
+            this.model.view.disableButton("redo-button");
         }
         // HANDLER FOR UNDO BUTTON
         document.getElementById("undo-button").onmousedown = (event) => {
@@ -129,6 +132,7 @@ export default class PlaylisterController {
             this.model.toggleConfirmDialogOpen();
             let editSongModal = document.getElementById("edit-playlist-card-modal");
             editSongModal.classList.remove("is-visible");
+            this.model.view.updateToolbarButtons(this.model);
             
         }
 

@@ -20,6 +20,7 @@ export default class AddSong_Transaction extends jsTPS_Transaction {
     
     undoTransaction() {
         let song = document.getElementById("playlist-card-"+ (this.model.currentList.songs.length));
+        this.model.currentList.songs.length--;
         song.remove();
     }
 }

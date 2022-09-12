@@ -274,7 +274,6 @@ export default class PlaylisterModel {
     // SIMPLE UNDO/REDO FUNCTIONS, NOTE THESE USE TRANSACTIONS
 
     undo() {
-        console.log(this.tps.hasTransactionToUndo());
         if (this.tps.hasTransactionToUndo()) {
             this.tps.undoTransaction();
             this.view.updateToolbarButtons(this);

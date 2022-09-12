@@ -195,7 +195,6 @@ export default class PlaylisterView {
         this.enableButton("undo-button");
         this.enableButton("redo-button");
         this.enableButton("close-button");
-
     }
 
     /*
@@ -224,15 +223,19 @@ export default class PlaylisterView {
         let tps = model.tps;
         console.log(model.confirmDialogOpen);
         if (model.confirmDialogOpen) {
-            if((tps.hasTransactionToUndo()) && tps.hasTransactionToRedo()){
+            if((tps.hasTransactionToUndo()) && (tps.hasTransactionToRedo()) ){
                 this.enableButton("undo-button");
                 this.enableButton("redo-button");
             }
-            else if(tps.hasTransactionToUndo()){
+            else if((tps.hasTransactionToUndo()) &&  !(tps.hasTransactionToRedo())){
                 this.enableButton("undo-button");
+                this.disableButton("redo-button");
+            }
+            else if((tps.hasTransactionToRedo()&&  !(tps.hasTransactionToUndo()))){
+                this.disableButton("undo-button");
+                this.enableButton("redo-button");
             }
             else{
-                this.disableButton("add-song-button");
                 this.disableButton("undo-button");
                 this.disableButton("redo-button");
             }
@@ -249,10 +252,11 @@ export default class PlaylisterView {
         let statusBar = document.getElementById("statusbar");
         if (model.hasCurrentList()) {
             statusBar.innerHTML = model.currentList.getName();
-            this.enableButton("add-list-button");
+            this.disableButton("add-list-button");
             this.enableButton("close-button");
         } else {
             statusBar.innerHTML = '';
+            this.enableButton("add-list-button");
             this.updateToolbarButtons(model);
         }
     }
